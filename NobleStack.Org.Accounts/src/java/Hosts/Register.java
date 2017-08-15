@@ -5,6 +5,8 @@
  */
 package Hosts;
 
+import NobleStack.Org.Utils.Common.Parser;
+import com.google.gson.Gson;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -24,7 +26,6 @@ public class Register {
 
     @Context
     private UriInfo context;
-
     /**
      * Creates a new instance of GenericResource
      */
@@ -37,9 +38,11 @@ public class Register {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getXml() {
+    @Path("register/hello")
+    public String hello() {
         //TODO return proper representation object
-        return "fuck you";
+        //Register s1 = new Parser<Register>().convert(s, Register.class);
+        return "Hello World";
     }
 
     /**
