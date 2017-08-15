@@ -5,15 +5,16 @@
  */
 package Hosts;
 
+import Implementation.RegisterBLC;
+import NobleStack.Org.DataContracts.Accounts.RegisterRequest;
 import NobleStack.Org.Utils.Common.Parser;
-import com.google.gson.Gson;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -49,8 +50,15 @@ public class Register {
      * PUT method for updating or creating an instance of Register
      * @param content representation for the resource
      */
-    @PUT
-    @Consumes(MediaType.APPLICATION_XML)
-    public void putXml(String content) {
+    @POST
+    @Path("register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void RegisterUser(String content) {
+        RegisterRequest requestContent = new Parser<RegisterRequest>().convert(content, RegisterRequest.class);
+        if(requestContent == null){
+            throw new IllegalArgumentException();
+        }
+        RegisterBLC registerUserBlc  = new RegisterBLC();
+        registerUserBlc.RegisterUser(requestContent);
     }
 }

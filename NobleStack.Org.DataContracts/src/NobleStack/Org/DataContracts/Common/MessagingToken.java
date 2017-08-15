@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package NobleStack.Org.DataContracts.Accounts;
+package NobleStack.Org.DataContracts.Common;
 
 /**
  *
- * @author Rajesh
+ * @author Ashu
  */
-public class NewClass {
-    
+public class MessagingToken {
+    String TokenId;
+    TokenType TokenType;
 }

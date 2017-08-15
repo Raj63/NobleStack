@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package NobleStack.Org.Utils.DataAccess;
+package NobleStack.Org.DataContracts.Common;
 
 /**
  *
- * @author Rajesh
+ * @author Ashu
  */
-public class NewClass {
-    
+public class Application {
+    public String ApplicationId;
+    public String ApplicationName;
+    public String Description;
 }
