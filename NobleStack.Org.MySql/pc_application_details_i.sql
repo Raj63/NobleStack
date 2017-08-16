@@ -5,7 +5,8 @@ DELIMITER //
 CREATE PROCEDURE pc_application_details_i(
 	app_name VARCHAR(20),
 	description VARCHAR(1000),
-    active_ind BOOL
+    active_ind BOOL,
+    out application_id INT
 )
 BEGIN
 	INSERT INTO application_details( 
@@ -18,5 +19,5 @@ BEGIN
 					description, 
 					active_ind
                     );
-	SELECT last_insert_id() as application_id;
+	SET application_id = last_insert_id();
 END//

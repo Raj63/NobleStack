@@ -19,11 +19,11 @@ public class ConnectionHelper {
     public static Connection getConnection() {
         Connection conn = null;
         try {
-            Class.forName(Constants.Database.driver).newInstance();
+            Class.forName(Constants.Database.driver);
             conn = DriverManager.getConnection(Constants.Database.url, 
                     Constants.Database.userName, Constants.Database.password);
             System.out.println("Connected to the database");
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
         return conn;

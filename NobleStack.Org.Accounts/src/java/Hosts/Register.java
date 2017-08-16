@@ -51,7 +51,7 @@ public class Register {
      * @param content representation for the resource
      */
     @POST
-    @Path("register")
+    @Path("registerUser")
     @Consumes(MediaType.APPLICATION_JSON)
     public void RegisterUser(String content) {
         RegisterRequest requestContent = new Parser<RegisterRequest>().convert(content, RegisterRequest.class);

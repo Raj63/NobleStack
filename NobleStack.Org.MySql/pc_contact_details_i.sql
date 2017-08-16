@@ -4,10 +4,11 @@ DELIMITER //
 
 CREATE PROCEDURE pc_contact_details_i(
 	email_id VARCHAR(60),
-    phone_number VARCHAR(13)
+    phone_number VARCHAR(13),
+    out user_id INT
 )
 BEGIN
-	INSERT INTO application_details( 
+	INSERT INTO contact_details( 
 					email_id,
                     phone_number
                     ) 
@@ -15,5 +16,5 @@ BEGIN
 					email_id,
                     phone_number
                     );
-	SELECT last_insert_id() AS user_id;
+	SET user_id = last_insert_id() ;
 END//
