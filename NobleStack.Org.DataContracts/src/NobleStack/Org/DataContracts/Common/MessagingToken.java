@@ -10,6 +10,6 @@ package NobleStack.Org.DataContracts.Common;
  * @author Ashu
  */
 public class MessagingToken {
-    String TokenId;
-    TokenType TokenType;
+    public String TokenId;
+    public TokenType TokenType;
 }

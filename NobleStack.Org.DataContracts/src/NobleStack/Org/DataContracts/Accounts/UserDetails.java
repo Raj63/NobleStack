@@ -12,5 +12,6 @@ package NobleStack.Org.DataContracts.Accounts;
 public class UserDetails {
     public String FirstName;
     public String LastName;
-    public int age;    
+    public int age; 
+    public int UserId;
 }

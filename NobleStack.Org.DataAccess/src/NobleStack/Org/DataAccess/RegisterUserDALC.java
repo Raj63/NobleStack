@@ -8,14 +8,13 @@ package NobleStack.Org.DataAccess;
 import NobleStack.Org.DataContracts.Accounts.ContactDetails;
 import NobleStack.Org.DataContracts.Accounts.UserDetails;
 import NobleStack.Org.DataContracts.Common.Application;
+import NobleStack.Org.DataContracts.Common.TokenType;
 import NobleStack.Org.Utils.Common.Validator;
 import NobleStack.Org.Utils.DataAccess.ConnectionHelper;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,8 +22,8 @@ import java.util.logging.Logger;
  */
 public class RegisterUserDALC {
 
-    public int SaveApplicationDetails(Application request) {
-        int applicationId = 0;
+    public String SaveApplicationDetails(Application request) throws SQLException {
+        String applicationId = "";
         try {
             //save in database
             if (request == null || Validator.IsNullOrWhiteSpace(request.ApplicationName)
@@ -34,23 +33,23 @@ public class RegisterUserDALC {
             Connection conn = ConnectionHelper.getConnection();
             CallableStatement stmt = conn.prepareCall("{call pc_application_details_i(?,?,?,?)}");
             stmt.setString("app_name", request.ApplicationName);
-            stmt.setString("description", request.Description);
+            stmt.setString("descr", request.Description);
             stmt.setBoolean("active_ind", true);
-            stmt.registerOutParameter("application_id", Types.INTEGER);
+            stmt.registerOutParameter("app_id", Types.INTEGER);
             stmt.execute();
 
             stmt.getResultSet();
 
-            applicationId = stmt.getInt("application_id");
+            applicationId = Integer.toString(stmt.getInt("app_id"));
 
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(RegisterUserDALC.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
         return applicationId;
     }
 
-    public int SaveContactDetails(ContactDetails request) {
+    public int SaveContactDetails(ContactDetails request) throws SQLException {
         int userId = 0;
         try {
             //save in database
@@ -61,42 +60,67 @@ public class RegisterUserDALC {
             }
             Connection conn = ConnectionHelper.getConnection();
             CallableStatement stmt = conn.prepareCall("{call pc_contact_details_i(?,?,?)}");
-            stmt.setString("email_id", request.EmailAddress);
-            stmt.setString("phone_number", request.PhoneNumber);
-            stmt.registerOutParameter("user_id", Types.INTEGER);
+            stmt.setString("email_adr", request.EmailAddress);
+            stmt.setString("p_num", request.PhoneNumber);
+            stmt.registerOutParameter("uid", Types.INTEGER);
             stmt.execute();
-            userId = stmt.getInt("user_id");
+            userId = stmt.getInt("uid");
             
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(RegisterUserDALC.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
         return userId;
     }
 
-    public void SaveUserDetails(UserDetails userDetails, int applicationId, int userId) {
+    public void SaveUserDetails(UserDetails userDetails, String applicationId, int userId, String tokenNumber) throws SQLException {
 
         try {
             //save in database
             if (userDetails == null
-                    || applicationId == 0 || userId == 0
+                    || applicationId.equals("0") || userId == 0
                     || Validator.IsNullOrWhiteSpace(userDetails.FirstName)
                     || Validator.IsNullOrWhiteSpace(userDetails.LastName)
                     || userDetails.age == 0) {
                 throw new IllegalArgumentException("Invalid Request");
             }
             Connection conn = ConnectionHelper.getConnection();
-            CallableStatement stmt = conn.prepareCall("{call pc_user_details_i(?,?,?,?,?,?)}");
-            stmt.setInt("user_id", userId);
+            CallableStatement stmt = conn.prepareCall("{call pc_user_details_iu(?,?,?,?,?,?,?)}");
+            stmt.setInt("u_id", userId);
             stmt.setString("fname", userDetails.FirstName);
             stmt.setString("lname", userDetails.LastName);
-            stmt.setInt("age", userDetails.age);
-            stmt.setInt("app_id", applicationId);
+            stmt.setInt("user_age", userDetails.age);
+            stmt.setInt("app_id", Integer.parseInt(applicationId));
+            stmt.setString("tok_num",Validator.IsNullOrWhiteSpace(tokenNumber)? null:tokenNumber) ;
             stmt.setBoolean("act_ind", true);
             stmt.execute();
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(RegisterUserDALC.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
+    }
+
+    public String SaveTokenDetails(String tokenId, TokenType tokenType, String applicationId, int userId) throws SQLException {
+
+        String tokenNumber = null;
+        try {
+            //save in database
+            if (Validator.IsNullOrWhiteSpace(tokenId)) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+            Connection conn = ConnectionHelper.getConnection();
+            CallableStatement stmt = conn.prepareCall("{call pc_token_details_i(?,?,?,?,?)}");
+            stmt.setString("tok_type", String.valueOf(tokenType));
+            stmt.setString("tok_id", tokenId);
+            stmt.setInt("u_id", userId);
+            stmt.setInt("app_id", Integer.parseInt(applicationId));
+            stmt.registerOutParameter("tok_num", Types.INTEGER);
+            stmt.execute();
+            tokenNumber = Integer.toString(stmt.getInt("tok_num"));
+            conn.close();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+        return tokenNumber;
     }
 }
