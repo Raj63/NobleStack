@@ -6,9 +6,9 @@
 package Hosts;
 
 import Implementation.RegisterBLC;
+import NobleStack.Org.DataContracts.Accounts.ContactDetails;
 import NobleStack.Org.DataContracts.Accounts.RegisterRequest;
 import NobleStack.Org.Utils.Common.Parser;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
@@ -62,13 +62,34 @@ public class Register {
         try {
             RegisterRequest requestContent = new Parser<RegisterRequest>().convert(content, RegisterRequest.class);
             if(requestContent == null){
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("RegisterRequest");
             }
             RegisterBLC registerUserBlc  = new RegisterBLC();
             userid =  registerUserBlc.RegisterUser(requestContent);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
         return userid;
     }
+    
+        /**
+     * PUT method for updating or creating an instance of Register
+     * @param content representation for the resource
+     */
+    @POST
+    @Path("registerMessagingToken")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void RegisterMessagingToken(String content) {
+        try {
+            RegisterRequest requestContent = new Parser<RegisterRequest>().convert(content, RegisterRequest.class);
+            if (requestContent == null) {
+                throw new IllegalArgumentException();
+            }
+            RegisterBLC registerUserBlc = new RegisterBLC();
+            registerUserBlc.RegisterMessagingToken(requestContent);
+        } catch (Exception ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }

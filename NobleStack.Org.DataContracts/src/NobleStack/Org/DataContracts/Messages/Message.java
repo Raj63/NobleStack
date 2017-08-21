@@ -9,6 +9,8 @@ package NobleStack.Org.DataContracts.Messages;
  *
  * @author Rajesh
  */
-public class NewClass {
-    
+public class Message {
+    public String MessageText;
+    public String SpecialHeader;
+    public String MessageType;
 }

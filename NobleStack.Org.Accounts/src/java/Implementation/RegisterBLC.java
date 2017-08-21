@@ -7,6 +7,7 @@ package Implementation;
 
 import NobleStack.Org.DataAccess.RegisterUserDALC;
 import NobleStack.Org.DataContracts.Accounts.RegisterRequest;
+import NobleStack.Org.DataContracts.Common.MessagingToken;
 import NobleStack.Org.Utils.Common.Validator;
 import java.sql.SQLException;
 
@@ -26,11 +27,21 @@ public class RegisterBLC {
         request.User.UserDetails.UserId = dalc.SaveContactDetails(request.User.ContactDetails);
         String tokenNumber = null;
         if((request.MessagingToken!=null)){
-            tokenNumber = dalc.SaveTokenDetails(request.MessagingToken.TokenId, request.MessagingToken.TokenType,
-                    request.Application.ApplicationId, request.User.UserDetails.UserId);
+            tokenNumber = dalc.SaveTokenDetails(request.MessagingToken.TokenId, request.MessagingToken.TokenType);
         }
         dalc.SaveUserDetails(request.User.UserDetails, request.Application.ApplicationId, 
                 request.User.UserDetails.UserId, tokenNumber);
         return request.User.UserDetails.UserId;
+    }
+    
+     public void RegisterMessagingToken(RegisterRequest request) throws SQLException {
+        if (request == null || request.User == null || request.User.UserDetails == null
+                || request.User.ContactDetails == null || request.Application == null || request.MessagingToken == null) {
+            throw new IllegalArgumentException("Invalid Request");
+        }
+        RegisterUserDALC dalc = new RegisterUserDALC();
+        String userId = dalc.GetUserId(request.User.ContactDetails);
+        String tokenNumber = dalc.SaveTokenDetails(request.MessagingToken.TokenId, request.MessagingToken.TokenType);
+        dalc.UpdateUserMessagingToken(userId, tokenNumber);   
     }
 }
