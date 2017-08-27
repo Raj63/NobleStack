@@ -19,8 +19,18 @@ public class Parser<T> {
      * @param classType
      * @return
      */
-    public T convert(String json, Class<T> classType){
+    public T convertToObject(String json, Class<T> classType){
         Gson gson = new Gson();        
         return gson.fromJson(json, classType);
+    }
+    
+    /**
+     *
+     * @param request
+     * @return
+     */
+    public String convertToJson(T request){
+        Gson gson = new Gson();
+        return gson.toJson(request);
     }
 }

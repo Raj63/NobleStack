@@ -6,7 +6,6 @@
 package Hosts;
 
 import Implementation.RegisterBLC;
-import NobleStack.Org.DataContracts.Accounts.ContactDetails;
 import NobleStack.Org.DataContracts.Accounts.RegisterRequest;
 import NobleStack.Org.Utils.Common.Parser;
 import java.util.logging.Level;
@@ -19,6 +18,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * REST Web Service
@@ -57,19 +57,21 @@ public class Register {
     @POST
     @Path("registerUser")
     @Consumes(MediaType.APPLICATION_JSON)
-    public int RegisterUser(String content) {
-        int userid = 0;
+    public Response RegisterUser(String content) {
+        Response response = null;
         try {
-            RegisterRequest requestContent = new Parser<RegisterRequest>().convert(content, RegisterRequest.class);
+            RegisterRequest requestContent = new Parser<RegisterRequest>().convertToObject(content, RegisterRequest.class);
             if(requestContent == null){
                 throw new IllegalArgumentException("RegisterRequest");
             }
             RegisterBLC registerUserBlc  = new RegisterBLC();
-            userid =  registerUserBlc.RegisterUser(requestContent);
+            int userid =  registerUserBlc.RegisterUser(requestContent);
+            response = Response.ok(new Parser().convertToJson(userid) , MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-        return userid;
+        return response;
     }
     
         /**
@@ -79,17 +81,20 @@ public class Register {
     @POST
     @Path("registerMessagingToken")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void RegisterMessagingToken(String content) {
+    public Response RegisterMessagingToken(String content) {
+        Response response = null;
         try {
-            RegisterRequest requestContent = new Parser<RegisterRequest>().convert(content, RegisterRequest.class);
+            RegisterRequest requestContent = new Parser<RegisterRequest>().convertToObject(content, RegisterRequest.class);
             if (requestContent == null) {
                 throw new IllegalArgumentException();
             }
             RegisterBLC registerUserBlc = new RegisterBLC();
             registerUserBlc.RegisterMessagingToken(requestContent);
+            response = Response.ok().build();
         } catch (Exception ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
+        return response;
     }
-    
 }

@@ -5,13 +5,14 @@
  */
 package NobleStack.Org.DataContracts.Messages;
 
+import NobleStack.Org.DataContracts.Accounts.ContactDetails;
+import NobleStack.Org.DataContracts.Common.Application;
+
 /**
  *
- * @author Rajesh
+ * @author Ashu
  */
-public class Message {
-    public int MessageId;
-    public String MessageText;
-    public String SpecialHeader;
-    public String MessageType;
+public class GetNotificationsRequest {
+    public ContactDetails Receiver;
+    public Application Application;
 }

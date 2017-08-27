@@ -9,12 +9,13 @@ CREATE TABLE ref_message_status(
 );
 
 INSERT INTO ref_message_status(rms_id, rms_value) 
-VALUES (1, 'Sent'),(1, 'Delivered'),(3, 'Read');
+VALUES (1, 'Sent'),(2, 'Delivered'),(3, 'Read');
 
 CREATE TABLE message_queue(
 	mq_id INT AUTO_INCREMENT PRIMARY KEY,
     mq_status INT REFERENCES ref_message_status(rms_id),
     mq_description BLOB,
-    mq_sender INT REFERENCES contact_details(user_id),
-    mq_receiver INT REFERENCES contact_details(user_id)
+    mq_sender INT REFERENCES user_details(user_id),
+    mq_receiver INT REFERENCES user_details(user_id),
+    mq_application_id INT REFERENCES application_details(application_id)
 );
